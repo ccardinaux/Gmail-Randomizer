@@ -5,31 +5,47 @@
 
 <body>
 	<textarea id="textarea1"></textarea>
-	<button id="button1">click</button>
+	<button type="button" id="button1">click to randomize</button>
 	
 <script type="text/javascript">
-	//JavaScript in recent Chrome browsers should include a trim() function
+	//JavaScript in recent Chrome browsers includes a trim() function so we don't have to create one
+	//if you did have to create one, this would be the code (uses a regular expression)
 	/*String.prototype.trim = function () {
 		return this.replace(/^\s*(\S*(\s+\S+)*)\s*$/, "$1");
 	};*/
 	
+	//get button element
 	var button = document.getElementById("button1");
+	
+	//add event listener for button click
 	button.addEventListener("click", function() {
+			//get value of textarea
 			var userText = document.getElementById("textarea1").value;
+			//split text at commas and save it to an array
 			var userTextArray = userText.split(",");
+			//instantiate variable for text once it's been randomized
 			var randomizedText = "";
+			
+			//randomly sort array
 			userTextArray.sort(function() {
 					return 0.5 - Math.random();
 					});
+					
+			//loop through array
 			for (var i = 0; i < userTextArray.length; i++) {
+				//trim extra whitespace for each entry in array
 				userTextArray[i] = userTextArray[i].trim();
+				
+				//until we reach the last entry in array, add it to the randomizedText variable separated by comma and space
 				if(i < userTextArray.length - 1) {
 					randomizedText += userTextArray[i] + ", ";
 				}
+				//no comma after last entry
 				else {
 					randomizedText += userTextArray[i];
 				}
 			}
+			//change the value of the textarea to randomizedText
 			document.getElementById("textarea1").value = randomizedText;
 		}, false);
 </script>
