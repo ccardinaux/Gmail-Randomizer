@@ -1,0 +1,37 @@
+<!DOCTYPE>
+<html>
+<head>
+</head>
+
+<body>
+	<textarea id="textarea1"></textarea>
+	<button id="button1">click</button>
+	
+<script type="text/javascript">
+	//JavaScript in recent Chrome browsers should include a trim() function
+	/*String.prototype.trim = function () {
+		return this.replace(/^\s*(\S*(\s+\S+)*)\s*$/, "$1");
+	};*/
+	
+	var button = document.getElementById("button1");
+	button.addEventListener("click", function() {
+			var userText = document.getElementById("textarea1").value;
+			var userTextArray = userText.split(",");
+			var randomizedText = "";
+			userTextArray.sort(function() {
+					return 0.5 - Math.random();
+					});
+			for (var i = 0; i < userTextArray.length; i++) {
+				userTextArray[i] = userTextArray[i].trim();
+				if(i < userTextArray.length - 1) {
+					randomizedText += userTextArray[i] + ", ";
+				}
+				else {
+					randomizedText += userTextArray[i];
+				}
+			}
+			document.getElementById("textarea1").value = randomizedText;
+		}, false);
+</script>
+</body>
+</html>
