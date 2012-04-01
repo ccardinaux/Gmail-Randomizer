@@ -1,0 +1,133 @@
+<!DOCTYPE>
+<html>
+<head>
+	<style type="text/css">
+		body
+		{
+			width: 300px;
+			height: 300px;
+			font-family: sans-serif;
+		}
+		textarea
+		{
+			width: 250px;
+			height: 250px;
+		}
+		p
+		{
+			font-size: 0.8em;
+		}
+	</style>
+	<script type="text/javascript">
+	window.onload = function() {	
+		//get button elements - getElementsByTagName returns an array of objects
+		var buttons = document.getElementsByTagName("input");
+	
+		//add event listeners for button clicks by looping through array
+		for(var i = 0; i < buttons.length; i++) {
+			buttons[i].addEventListener("click", function() {
+					//get textarea and assign it to a variable
+					var textArea = document.getElementById("textarea1");
+					
+					//get value of textarea
+					var userText = textArea.value;
+					
+					//get value of button (random or a-z)
+					var buttonValue = this.value;
+					
+					//sort text - pass userText and buttonValue to sortText function
+					//and assign the result to the variable orderedText
+					var orderedText = sortText(userText, buttonValue);
+					
+					//change the value of the textarea to orderedText
+					textArea.value = orderedText;
+					
+					//copy to clipboard - uses Chrome extensions api
+					textArea.focus();
+					textArea.select();
+					document.execCommand('Copy');
+					
+					//message to user
+					document.getElementById("usermessage").innerHTML = "copied to clipboard";
+				}, false);
+		}
+	}
+	
+	function sortText(userText, method) {
+		//instantiate array
+		var userTextArray = new Array();
+		
+		//check if email addresses are in < >
+		if(userText.indexOf("<") != -1) {
+			//if they are, extract email addresses and put them in the array
+			while(userText.indexOf("<") != -1) {
+				var begIndex = userText.indexOf("<");
+				var endIndex = userText.indexOf(">");
+				userTextArray.push(userText.substring(begIndex + 1, endIndex));
+				userText = userText.substr(0, begIndex) + userText.substr(begIndex + 1);
+				userText = userText.substr(0, endIndex - 1) + userText.substr(endIndex);
+			}
+			
+			//useful JSON method to show value of array! - only works in Firefox & Chrome
+			//alert(JSON.stringify(userTextArray));
+		}
+		else {
+			//remove any whitespace at beginning and end of string
+			userText = userText.trim();
+			//check if there is a comma at the end, if so remove it
+			if(userText.charAt(userText.length - 1) == ",") {
+				userText = userText.slice(0, -1);
+			}
+			//split text at commas and save it to an array
+			userTextArray = userText.split(",");
+		}
+		
+		//instantiate variable for text once it's been sorted
+		var orderedText = "";
+		
+		for(var i = 0; i < userTextArray.length; i++) {
+			//trim extra whitespace for each entry in array
+			userTextArray[i] = userTextArray[i].trim();
+		}
+	
+		//sort array - default is alphabetic
+		if(method == "random") {
+			userTextArray = randomize(userTextArray);
+		}
+		else userTextArray.sort();
+	
+		//loop through array
+		for(var i = 0; i < userTextArray.length; i++) {
+			//until we reach the last entry in array, add it to the orderedText variable separated by comma and space
+			if(i < userTextArray.length - 1) {
+				orderedText += userTextArray[i] + ", ";
+			}
+			//no comma after last entry
+			else {
+				orderedText += userTextArray[i];
+			}
+		}
+		
+		//return the sorted text
+		return orderedText;
+	}
+	
+	function randomize(userTextArray) {
+		return userTextArray.sort(function() {
+				return 0.5 - Math.random();
+				});
+	}
+	</script>
+</head>
+
+<body>
+	<p>
+		<textarea id="textarea1"></textarea>
+	</p>
+	<p>
+		<input type="button" value="random" />
+		<input type="button" value="a-z" />
+	</p>
+	<p id="usermessage">&nbsp;</p>
+</body>
+</html>
